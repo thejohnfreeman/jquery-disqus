@@ -2,6 +2,7 @@
  * jQuery Disqus Plugin
  *
  * Copyright (c) 2010 Lance Pollard (@viatropos)
+ * Edited by John Freeman (@thejohnfreeman)
  * Licensed under the MIT (MIT-LICENSE.txt)
  * Based off Rob Loach's jquery disqus plugin (http://robloach.net)
  */
