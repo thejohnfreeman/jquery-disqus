@@ -21,3 +21,31 @@ tried to do too much. I have made several changes:
 [sd]: https://github.com/coreyti/showdown "Showdown, a JavaScript port of Markdown"
 [pretty]: http://code.google.com/p/google-code-prettify/ "Prettify, a JavaScript- and CSS-based syntax highlighter"
 
+## Use
+
+Include appropriate dependencies in your `<head>`:
+
+```html
+<script
+  src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"
+  type="text/javascript"></script>
+<script
+  src="http://cachedcommons.org/javascripts/text/prettify-min.js"
+  type="text/javascript"></script>
+<script
+  src="http://cachedcommons.org/javascripts/text/showdown-min.js"
+  type="text/javascript"></script>
+```
+
+Then configure Disqus and run the plugin from anywhere:
+
+```js
+$(document).ready(function() {
+  /* We do not change the Disqus API. If you want to pass options to
+   * Disqus, do it like they expect: by setting global variables. */
+  disqus_shortname  = "example";
+  disqus_identifier = "/path/to/slug";
+  $.disqus();
+});
+```
+
