@@ -32,6 +32,25 @@ $(document).ready(function() {
 });
 ```
 
+## Caveats
+
+Be aware that the Disqus embed script manipulates comments, e.g.,
+changing long URLs into anchor elements (`<a>`) or newlines into line-break
+elements (`<br>`).
+These manipulations must be reversed for the original Markdown to parse as
+the comment author intended. I have made a minor attempt to address these two
+specific manipulations, but there are others that my script will not
+handle correctly.
+
+An ideal solution would essentially require rewriting the Disqus embed script
+and replacing the transformation that Disqus provides. I suspect it would be
+an easy change for Disqus developers with access to the source. For me, it is
+too much reverse engineering to be justified.
+
+I have not tested this script with Disqus 2012. My suspicion is that browsers
+will prohibit its access to the comments within the Disqus iframe, thus
+disabling it.
+
 ## History
 
 This plugin was branched off the last published version of the [jQuery Disqus
