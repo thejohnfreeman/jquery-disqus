@@ -7,6 +7,62 @@
  * Based off Rob Loach's jquery disqus plugin (http://robloach.net)
  */
 (function($) {
+
+  //var wrapRawText = function wrapRawText(str) {
+    //var result = document.createElement("textarea");
+    //result.value = str;
+    //result.className = "dsq-source";
+    //return result;
+  //};
+  
+  var fixDisqus = function fixDisqus(elt) {
+    /* Disqus tries to prettify links. Replace every anchor with the
+     * contents of its `href` attribute, and pray the user didn't write
+     * their own anchor. */
+    $("a", elt).replaceWith(function () { return $(this).attr("href"); });
+
+    /* Convert <br> to newline before passing through Showdown. */
+    return elt
+      .children()
+      .map(function () { return $(this).html().replace(/<br\/?>/g, "\n"); })
+      .get()
+      .join("\n\n");
+  };
+
+  var transformComments = function transformComments(comments, options) {
+    if (options.markdown && Attacklab) {
+      var converter = new Attacklab.showdown.converter();
+      comments.each(function () {
+        var comment = $(this);
+        //var source = comment.html();
+
+        var md = fixDisqus(comment);
+        comment.html(converter.makeHtml(md));
+
+        /* Use textarea to decode entities while preserving tags. */
+        var decoder = document.createElement("textarea");
+
+        /* Decode entities only in <code> blocks. */
+        $("code", comment).each(function () {
+          decoder.innerHTML = $(this).html();
+          $(this).html(decoder.value);
+        });
+
+        //comment.append(wrapRawText(source));
+        //comment.append(wrapRawText(md));
+      });
+    }
+
+    if (options.prettify) {
+      comments.each(function () {
+        /* Add the prettyprint class to every <pre> and <code> in the
+         * comment. */
+        $("pre", this).addClass("prettyprint");;
+        $("code", this).addClass("prettyprint");;
+        prettyPrint();
+      });
+    }
+  };
   
   /* We expect that this function is only ever called once in a page.
    * Disqus does not officially support multiple threads on a page. */
@@ -31,50 +87,12 @@
       dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
-    
+
     var poller = setInterval(function () {
       if (!$("#dsq-comments").length) return;
       clearInterval(poller);
-
       var comments = $(".dsq-comment-text");
-
-      if (options.markdown && Attacklab) {
-        var converter = new Attacklab.showdown.converter();
-        comments.each(function () {
-          var comment = $(this);
-
-          /* Convert <br> to newline before passing through Showdown. */
-          var md = $(this)
-            .children()
-            .map(function () {
-              return $(this).html().replace(/<br\/?>/g, "\n");
-            })
-            .get()
-            .join("\n\n");
-          comment.html(converter.makeHtml(md));
-
-          /* Use textarea to decode entities while preserving tags. */
-          var decoder = document.createElement("textarea");
-
-          /* Decode entities only in <code> blocks. */
-          $("code", comment).each(function () {
-            decoder.innerHTML = $(this).html();
-            $(this).html(decoder.value);
-          });
-
-        });
-      }
-
-      if (options.prettify) {
-        comments.each(function () {
-          /* Add the prettyprint class to every <pre> and <code> in the
-           * comment. */
-          $("pre", this).addClass("prettyprint");;
-          $("code", this).addClass("prettyprint");;
-          prettyPrint();
-        });
-      }
-
+      transformComments(comments, options);
     }, options.interval);
   };
 
