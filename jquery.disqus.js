@@ -9,11 +9,11 @@
 (function($) {
   
   /* We expect that this function is only ever called once in a page.
-  * Disqus does not officially support multiple threads on a page. */
+   * Disqus does not officially support multiple threads on a page. */
   $.disqus = function jQueryDisqus(options) {
     options = options || {};
 
-    // Merge in the default options.
+    /* Merge in the default options. */
     options = $.extend({
       markdown: true,
       prettify: true,
@@ -31,11 +31,6 @@
       dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
-    
-    //if (options.show_count == true) {
-      //var link = $("<a id='dsq-comment-count-for-this' class='dsq-comment-count' style='display:none;' href='" + window.location.href + "'>");
-      //link.appendTo($("body")).disqusLink(options.domain);
-    //}
     
     var poller = setInterval(function () {
       if (!$("#dsq-comments").length) return;
