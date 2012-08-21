@@ -15,11 +15,30 @@
     //return result;
   //};
   
+  /* Find the first index at which two strings differ. */
+  var firstDifference = function firstDifference(a, b) {
+    var i = 0;
+    while (i < a.length && i < b.length && a[i] === b[i]) ++i;
+    return i;
+  };
+
   var fixDisqus = function fixDisqus(elt) {
     /* Disqus tries to prettify links. Replace every anchor with the
      * contents of its `href` attribute, and pray the user didn't write
      * their own anchor. */
-    $("a", elt).replaceWith(function () { return $(this).attr("href"); });
+    $("a", elt).replaceWith(function () {
+      var anchor = $(this);
+
+      /* An anchor whose text is a prefix of the href was most likely
+       * converted from a URL written by the commenter. */
+      var href = anchor.attr("href");
+      var text = anchor.text();
+      var i = firstDifference(href, text);
+      if (i === text.length || text.substr(i) === "...") return href;
+
+      /* Every other anchor should be let through as-is. */
+      return anchor;
+    });
 
     /* Convert <br> to newline before passing through Showdown. */
     return elt
