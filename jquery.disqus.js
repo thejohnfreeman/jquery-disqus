@@ -37,7 +37,9 @@
       if (i === text.length || text.substr(i) === "...") return href;
 
       /* Every other anchor should be let through as-is. */
-      return anchor;
+      /* Cannot return `anchor` or `this` for some reason; must resort to
+       * outer HTML. */
+      return anchor.clone().wrap('<p>').parent().html();
     });
 
     /* Convert <br> to newline before passing through Showdown. */
